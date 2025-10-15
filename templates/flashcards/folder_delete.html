@@ -1,15 +1,30 @@
-{% extends 'flashcards/base.html' %}
+<!-- フォルダ削除の確認画面 -->
+
+{% extends "flashcards/base.html" %}
+
 {% block content %}
-<div class="card shadow-sm">
+<!-- 中央寄せカード表示（Bootstrapのカードを使用） -->
+<div class="card shadow-sm border-0 mx-auto" style="max-width: 600px; margin-top: 80px;">
   <div class="card-body">
+
+    <!-- タイトル -->
     <h2 class="h5 mb-3">フォルダ削除</h2>
-    <p>フォルダ「<strong>{{ folder.name }}</strong>」と中の単語を削除します。よろしいですか？</p>
+
+    <!-- 削除確認メッセージ -->
+    <p>
+      フォルダ「<strong>{{ folder.name }}</strong>」と中の単語を削除します。<br>
+      よろしいですか？
+    </p>
+
+    <!-- 削除フォーム -->
     <form method="post" class="d-flex gap-2">
       {% csrf_token %}
+      <!-- 削除ボタン -->
       <button class="btn btn-danger">削除する</button>
-      <a class="btn btn-outline-secondary" href="{% url 'flashcards:folder_list' %}">キャンセル</a>
+      <!-- キャンセルボタン：一覧へ戻る -->
+      <a href="{% url 'flashcards:folder_list' %}" class="btn btn-outline-secondary">キャンセル</a>
     </form>
+
   </div>
 </div>
 {% endblock %}
-

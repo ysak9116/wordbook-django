@@ -1,25 +1,38 @@
-{% extends 'flashcards/base.html' %}
-{% block content %}
+<!-- 単語削除画面 -->
 
+{% extends "flashcards/base.html" %}
+
+{% block content %}
+<!-- ページ全体を中央寄せに配置 -->
 <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center text-center">
 
+  <!-- 削除確認カード -->
   <div class="card shadow-sm border-0 p-4" style="max-width: 480px; width: 100%;">
+    <!-- タイトル -->
     <h1 class="h4 mb-4">単語削除</h1>
 
+    <!-- 削除確認メッセージ -->
     <p class="mb-4">
       「<strong>{{ obj.term }}</strong>」を削除します。<br>
       よろしいですか？
     </p>
 
+    <!-- 削除フォーム -->
     <form method="post">
       {% csrf_token %}
       <div class="d-flex justify-content-center gap-3">
+        <!-- 削除ボタン -->
         <button type="submit" class="btn btn-primary px-4">削除する</button>
-        <a href="{% url 'flashcards:term_list' obj.folder.id %}" class="btn btn-outline-secondary px-4">キャンセル</a>
+        <!-- キャンセルボタン：元のフォルダの単語一覧に戻る -->
+        <a
+          href="{% url 'flashcards:term_list' obj.folder.id %}"
+          class="btn btn-outline-secondary px-4"
+        >
+          キャンセル
+        </a>
       </div>
     </form>
   </div>
 
 </div>
-
 {% endblock %}

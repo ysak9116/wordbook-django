@@ -1,23 +1,41 @@
-{% extends 'flashcards/base.html' %}
+<!-- 新しいフォルダを作成する画面 -->
+
+{% extends "flashcards/base.html" %}
+
 {% block content %}
+<!-- 画面全体を中央寄せに配置 -->
 <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center py-5">
 
+  <!-- 入力フォームをカードで囲む -->
   <div class="card shadow-sm border-0 w-100" style="max-width: 600px;">
     <div class="card-body">
+
+      <!-- ページタイトル -->
       <h2 class="h4 mb-4 text-center">フォルダ作成</h2>
 
+      <!-- フォーム本体 -->
       <form method="post">
         {% csrf_token %}
+
+        <!-- フォルダ名入力欄 -->
         <div class="mb-3">
           <label for="id_name" class="form-label">フォルダ名</label>
-          <input type="text" name="name" id="id_name" class="form-control form-control-lg" placeholder="フォルダ名を入力">
+          <input
+            type="text"
+            name="name"
+            id="id_name"
+            class="form-control form-control-lg"
+            placeholder="フォルダ名を入力"
+          >
         </div>
 
+        <!-- ボタン配置：中央に「作成」「戻る」 -->
         <div class="d-flex justify-content-center gap-3">
           <button type="submit" class="btn btn-primary px-4">作成</button>
           <a href="{% url 'flashcards:folder_list' %}" class="btn btn-outline-secondary px-4">戻る</a>
         </div>
       </form>
+
     </div>
   </div>
 

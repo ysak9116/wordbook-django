@@ -1,11 +1,17 @@
-{% extends 'flashcards/base.html' %}
+<!-- 単語の追加、編集フォーム -->
+
+{% extends "flashcards/base.html" %}
 {% load form_extras %}
 
 {% block content %}
+<!-- 画面全体を中央寄せに配置 -->
 <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center py-5 text-center">
 
+  <!-- 入力フォームカード -->
   <div class="card shadow-sm border-0 w-100" style="max-width: 600px;">
     <div class="card-body">
+
+      <!-- ページタイトル（追加 or 編集で切替） -->
       <h1 class="h4 mb-4">
         {% if mode == 'create' %}
           単語追加（{{ folder.name }}）
@@ -14,36 +20,54 @@
         {% endif %}
       </h1>
 
-      <a href="{% url 'flashcards:term_list' folder.id %}" class="text-decoration-none d-block mb-3">
+      <!-- 一覧ページへの戻りリンク -->
+      <a
+        href="{% url 'flashcards:term_list' folder.id %}"
+        class="text-decoration-none d-block mb-3"
+      >
         ← 戻る
       </a>
 
+      <!-- 単語フォーム -->
       <form method="post" class="text-start">
         {% csrf_token %}
+
+        <!-- フォルダ選択 -->
         <div class="mb-3">
           <label for="id_folder" class="form-label">Folder</label>
           {{ form.folder|add_class:"form-select" }}
         </div>
+
+        <!-- 単語 -->
         <div class="mb-3">
           <label for="id_term" class="form-label">Term</label>
           {{ form.term|add_class:"form-control form-control-lg" }}
         </div>
+
+        <!-- 読み（ふりがな・英単語読みなど） -->
         <div class="mb-3">
           <label for="id_reading" class="form-label">Reading</label>
           {{ form.reading|add_class:"form-control form-control-lg" }}
         </div>
+
+        <!-- 意味 -->
         <div class="mb-3">
           <label for="id_meaning" class="form-label">Meaning</label>
           {{ form.meaning|add_class:"form-control form-control-lg" }}
         </div>
+
+        <!-- 学習状態 -->
         <div class="mb-4">
           <label for="id_status" class="form-label">Status</label>
           {{ form.status|add_class:"form-select" }}
         </div>
+
+        <!-- 保存ボタン -->
         <div class="text-center">
           <button type="submit" class="btn btn-primary btn-lg px-5">保存</button>
         </div>
       </form>
+
     </div>
   </div>
 
