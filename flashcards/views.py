@@ -1,16 +1,25 @@
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
+from django.views.decorators.http import require_POST
+
 from .models import Folder, Term
 from .forms import TermForm
 
 
+# =========================
+# フォルダ
+# =========================
+
+
 def folder_list(request):
+    """フォルダ一覧（用語数付き）"""
     folders = Folder.objects.annotate(term_count=Count("terms"))
     return render(request, "flashcards/folder_list.html", {"folders": folders})
 
 
 def folder_create(request):
+    """フォルダ作成"""
     if request.method == "POST":
         name = (request.POST.get("name") or "").strip()
         if name:
@@ -21,20 +30,37 @@ def folder_create(request):
     return render(request, "flashcards/folder_create.html")
 
 
+@require_POST
 def folder_delete(request, pk):
+    """
+    フォルダ削除（POST専用）
+    - “フォルダ詳細（用語一覧）”ページの削除ボタンから直接POSTする想定
+    """
     folder = get_object_or_404(Folder, pk=pk)
-    if request.method == "POST":
-        name = folder.name
-        folder.delete()
-        messages.warning(request, f"フォルダ「{name}」を削除しました。")
-        return redirect("flashcards:folder_list")
-    return render(request, "flashcards/folder_delete.html", {"folder": folder})
+
+    # 必要なら所有者チェックや権限チェックをここで
+    # if folder.owner_id != request.user.id:
+    #     messages.error(request, "このフォルダを削除する権限がありません。")
+    #     return redirect("flashcards:term_list", folder_id=folder.id)
+
+    # 必要なら「空フォルダのみ削除可」にする
+    # if folder.terms.exists():
+    #     messages.error(request, "このフォルダには用語があるため削除できません。")
+    #     return redirect("flashcards:term_list", folder_id=folder.id)
+
+    name = folder.name
+    folder.delete()  # Term の FK が CASCADE なら中身も一緒に削除
+    messages.warning(request, f"フォルダ「{name}」を削除しました。")
+    return redirect("flashcards:folder_list")
 
 
-# --- ここより下：単語の本実装 ---
+# =========================
+# 用語（フォルダ詳細）
+# =========================
 
 
 def term_list(request, folder_id):
+    """フォルダ内の用語一覧（状態でフィルタ可能）"""
     folder = get_object_or_404(Folder, pk=folder_id)
     status = request.GET.get("status")
     qs = folder.terms.all().order_by("term")
@@ -44,21 +70,17 @@ def term_list(request, folder_id):
     return render(
         request,
         "flashcards/term_list.html",
-        {
-            "folder": folder,
-            "terms": qs,
-            "status": status,
-        },
+        {"folder": folder, "terms": qs, "status": status},
     )
 
 
 def term_create(request, folder_id):
+    """用語の新規作成（同一フォルダ・同一用語は上書き更新）"""
     folder = get_object_or_404(Folder, pk=folder_id)
     if request.method == "POST":
         form = TermForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            # 同一フォルダ・同一用語は上書き更新
             obj, created = Term.objects.get_or_create(
                 folder=data["folder"],
                 term=data["term"],
@@ -87,6 +109,7 @@ def term_create(request, folder_id):
 
 
 def term_edit(request, pk):
+    """用語の編集"""
     obj = get_object_or_404(Term, pk=pk)
     if request.method == "POST":
         form = TermForm(request.POST, instance=obj)
@@ -104,6 +127,7 @@ def term_edit(request, pk):
 
 
 def term_delete(request, pk):
+    """用語の削除（確認→POST）"""
     obj = get_object_or_404(Term, pk=pk)
     folder_id = obj.folder_id
     if request.method == "POST":
@@ -115,6 +139,7 @@ def term_delete(request, pk):
 
 
 def term_toggle_status(request, pk, next_status):
+    """用語の状態トグル"""
     obj = get_object_or_404(Term, pk=pk)
     valid = {s for s, _ in Term.Status.choices}
     if next_status not in valid:

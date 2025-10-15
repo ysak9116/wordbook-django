@@ -1,0 +1,8 @@
+{% comment %} flashcards/templates/flashcards/partials/_state_badge.html {% endcomment %}
+{% if status == "mastered" %}
+  <span class="badge text-bg-success">定着</span>
+{% elif status == "learning" %}
+  <span class="badge text-bg-warning">学習中</span>
+{% else %}
+  <span class="badge text-bg-secondary">未学習</span>
+{% endif %}

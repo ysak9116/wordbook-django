@@ -1,15 +1,51 @@
-<!doctype html><meta charset="utf-8">
 {% extends 'flashcards/base.html' %}
+{% load form_extras %}
+
 {% block content %}
+<div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center py-5 text-center">
 
-<h1>単語{% if mode == 'edit' %}編集{% else %}追加{% endif %}（{{ folder.name }}）</h1>
+  <div class="card shadow-sm border-0 w-100" style="max-width: 600px;">
+    <div class="card-body">
+      <h1 class="h4 mb-4">
+        {% if mode == 'create' %}
+          単語追加（{{ folder.name }}）
+        {% else %}
+          単語編集（{{ folder.name }}）
+        {% endif %}
+      </h1>
 
-<p><a href="{% url 'flashcards:term_list' folder.id %}">← 戻る</a></p>
+      <a href="{% url 'flashcards:term_list' folder.id %}" class="text-decoration-none d-block mb-3">
+        ← 戻る
+      </a>
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button>保存</button>
-</form>
+      <form method="post" class="text-start">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="id_folder" class="form-label">Folder</label>
+          {{ form.folder|add_class:"form-select" }}
+        </div>
+        <div class="mb-3">
+          <label for="id_term" class="form-label">Term</label>
+          {{ form.term|add_class:"form-control form-control-lg" }}
+        </div>
+        <div class="mb-3">
+          <label for="id_reading" class="form-label">Reading</label>
+          {{ form.reading|add_class:"form-control form-control-lg" }}
+        </div>
+        <div class="mb-3">
+          <label for="id_meaning" class="form-label">Meaning</label>
+          {{ form.meaning|add_class:"form-control form-control-lg" }}
+        </div>
+        <div class="mb-4">
+          <label for="id_status" class="form-label">Status</label>
+          {{ form.status|add_class:"form-select" }}
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary btn-lg px-5">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
 {% endblock %}
-

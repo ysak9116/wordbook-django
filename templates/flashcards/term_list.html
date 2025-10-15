@@ -1,45 +1,60 @@
-<!doctype html><meta charset="utf-8">
 {% extends 'flashcards/base.html' %}
+
 {% block content %}
+<div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center py-5 text-center">
+  <div class="w-100" style="max-width: 960px;">
 
-<h1>「{{ folder.name }}」の単語一覧</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="h3 mb-0">{{ folder.name }} の用語</h1>
+      <div class="d-flex gap-2">
 
-<p>
-  <a href="/flash/folders/">← フォルダ一覧へ戻る</a> |
-  <a href="{% url 'flashcards:term_create' folder.id %}">＋ 単語追加</a>
-</p>
+        <a class="btn btn-outline-secondary" href="{% url 'flashcards:folder_list' %}">フォルダ一覧</a>
+        <a class="btn btn-primary" href="{% url 'flashcards:term_create' folder.id %}">用語を追加</a>
 
-<p>
-  フィルター：
-  <a href="?">すべて</a> /
-  <a href="?status=new">未学習</a> /
-  <a href="?status=learning">学習中</a> /
-  <a href="?status=mastered">習得済み</a>
-</p>
+        <!-- 追加：フォルダ削除（確認→POST） -->
+        <form method="post"
+              action="{% url 'flashcards:folder_delete' folder.id %}"
+              onsubmit="return confirm('このフォルダを削除します。元に戻せません。よろしいですか？');"
+              class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">フォルダを削除</button>
+        </form>
 
-<table border="1" cellpadding="6" cellspacing="0">
-  <tr>
-    <th>用語</th><th>読み</th><th>意味</th><th>状態</th><th>操作</th>
-  </tr>
-  {% for t in terms %}
-  <tr>
-    <td>{{ t.term }}</td>
-    <td>{{ t.reading }}</td>
-    <td>{{ t.meaning|linebreaksbr }}</td>
-    <td>
-      <a href="{% url 'flashcards:term_toggle_status' t.id 'new' %}">未学習</a> /
-      <a href="{% url 'flashcards:term_toggle_status' t.id 'learning' %}">学習中</a> /
-      <a href="{% url 'flashcards:term_toggle_status' t.id 'mastered' %}">習得済み</a>
-      <small>（現在：{{ t.get_status_display }}）</small>
-    </td>
-    <td>
-      <a href="{% url 'flashcards:term_edit' t.id %}">編集</a> |
-      <a href="{% url 'flashcards:term_delete' t.id %}">削除</a>
-    </td>
-  </tr>
-  {% empty %}
-  <tr><td colspan="5">単語が登録されていません</td></tr>
-  {% endfor %}
-</table>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle text-start">
+        <thead>
+          <tr>
+            <th style="width:20%">用語</th>
+            <th style="width:15%">読み</th>
+            <th>意味</th>
+            <th style="width:12%">状態</th>
+            <th style="width:14%" class="text-end">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in terms %}
+            <tr>
+              <td class="fw-semibold">{{ t.term }}</td>
+              <td>{{ t.reading }}</td>
+              <td class="text-body-secondary">{{ t.meaning|linebreaksbr }}</td>
+              <td>{% include "flashcards/partials/_state_badge.html" with status=t.status %}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'flashcards:term_edit' t.id %}">編集</a>
+                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'flashcards:term_delete' t.id %}">削除</a>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="text-center text-body-secondary py-5">用語がありません</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
 {% endblock %}
-
