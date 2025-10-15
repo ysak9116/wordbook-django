@@ -1,0 +1,15 @@
+{% extends 'flashcards/base.html' %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h2 class="h5 mb-3">フォルダ削除</h2>
+    <p>フォルダ「<strong>{{ folder.name }}</strong>」と中の単語を削除します。よろしいですか？</p>
+    <form method="post" class="d-flex gap-2">
+      {% csrf_token %}
+      <button class="btn btn-danger">削除する</button>
+      <a class="btn btn-outline-secondary" href="{% url 'flashcards:folder_list' %}">キャンセル</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
+

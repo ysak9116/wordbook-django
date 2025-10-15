@@ -1,0 +1,19 @@
+{% extends 'flashcards/base.html' %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h2 class="h5 mb-3">フォルダ作成</h2>
+    <form method="post" class="row gy-3">
+      {% csrf_token %}
+      <div class="col-12">
+        <label class="form-label">フォルダ名</label>
+        <input name="name" class="form-control" required>
+      </div>
+      <div class="col-12 d-flex gap-2">
+        <button class="btn btn-primary">作成</button>
+        <a class="btn btn-outline-secondary" href="{% url 'flashcards:folder_list' %}">戻る</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

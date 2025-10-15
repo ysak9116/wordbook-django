@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>フォルダ一覧</title>
+</head>
+<body>
+  {% extends 'flashcards/base.html' %}
+  {% block content %}
+  <h1>フォルダ一覧</h1>
+  <ul>
+    {% for f in folders %}
+      <li><a href="{% url 'flashcards:term_list' f.id %}">{{ f.name }}</a>（{{ f.term_count }}語）</li>
+    {% empty %}
+      <li>フォルダがありません</li>
+    {% endfor %}
+  </ul>
+
+  <form method="post" action="{% url 'flashcards:folder_create' %}">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="フォルダ名">
+    <button type="submit">追加</button>
+  </form>
+  {% endblock %}
+</body>
+</html>

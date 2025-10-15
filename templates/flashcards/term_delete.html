@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8">
+{% extends 'flashcards/base.html' %}
+{% block content %}
+
+<h1>単語削除</h1>
+<p>「{{ obj.term }}」を削除します。よろしいですか？</p>
+<form method="post">
+  {% csrf_token %}
+  <button>削除する</button>
+  <a href="{% url 'flashcards:term_list' obj.folder.id %}">キャンセル</a>
+</form>
+{% endblock %}
+

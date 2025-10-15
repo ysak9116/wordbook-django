@@ -1,0 +1,15 @@
+<!doctype html><meta charset="utf-8">
+{% extends 'flashcards/base.html' %}
+{% block content %}
+
+<h1>単語{% if mode == 'edit' %}編集{% else %}追加{% endif %}（{{ folder.name }}）</h1>
+
+<p><a href="{% url 'flashcards:term_list' folder.id %}">← 戻る</a></p>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button>保存</button>
+</form>
+{% endblock %}
+
